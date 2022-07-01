@@ -1,8 +1,6 @@
 .ceil__common {
     background-color: rgb(56, 75, 69);
     outline: 1px solid rgb(41, 41, 41);
-    outline-offset: -1px;
-    border-radius: 4px;
     font-size: .6em;
     display: flex;
     justify-content: center;

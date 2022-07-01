@@ -15,7 +15,7 @@ export class World {
         
         /* 
             генерация новых Unit-ов 
-            *если roundMinMax(0,100) вернет больше 50 - статус [isAlive = true];
+            *если roundMinMax() вернет больше 50 - статус [isAlive = true];
             
             добавление пустых Unit-ов [isAlive = false] и [world = null]
             по периметру таблицы с ячейками
@@ -47,7 +47,8 @@ export class World {
 
                     } else {
 
-                        row.push(new Unit(roundMinMax(0,100), j, i, this))
+                        row.push(new Unit(roundMinMax(0,55), j, i, this))
+                        // row.push(new Unit(roundMinMax(0,100), j, i, this))
 
                     }
                 }

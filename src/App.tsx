@@ -5,7 +5,9 @@ function App() {
 
   return (
     <>
-      <WorldComponent world={new World(20)} size={480}/>
+      <WorldComponent world={new World(50)} size={500}/>
+      {/* <WorldComponent world={new World(100)} size={1000}/> */}
+      {/* <WorldComponent world={new World(50)} size={500}/> */}
       {/* <WorldComponent world={new World(30)} size={500}/> */}
     </>
   );
