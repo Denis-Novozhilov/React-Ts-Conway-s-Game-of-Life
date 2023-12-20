@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { IUnit } from '../../models/Unit/Unit';
+import { Command, IUnit } from '../../models/Unit/Unit';
 import s from './CubeItem.style.module.css';
 import cn from 'classnames';
 
@@ -9,9 +9,17 @@ interface CubeItemProps {
 	index?: number;
 	unit: IUnit;
 	gameStatus: boolean;
+	getNextItemStep: (arg: Command) => Command;
 }
 
-const CubeItem: FC<CubeItemProps> = ({ size, index, unit, gameStatus, fontSize }) => {
+const CubeItem: FC<CubeItemProps> = ({
+	size,
+	index,
+	unit,
+	gameStatus,
+	fontSize,
+	getNextItemStep
+}) => {
 	const [LiveStatus, setLiveStatus] = useState(unit.isAlive);
 	const [gameStatusState, setgameStatusState] = useState(gameStatus);
 
@@ -21,14 +29,19 @@ const CubeItem: FC<CubeItemProps> = ({ size, index, unit, gameStatus, fontSize }
 		unit.checkSiblings();
 		// console.log(unit.genLog);
 		console.log(`
-    Me isAlive(${unit.isAlive}) X_${unit.x}_Y_${unit.y} my_world_${unit.world} 
+        Me isAlive(${unit.isAlive}) X_${unit.x}_Y_${unit.y} my_world_${unit.world} 
 
-    generation log 
-    ${unit.genLog[0]} 
-    ${unit.genLog[1]} 
-    ${unit.genLog[2]} 
+        generation log 
+        ${unit.genLog[0]} 
+        ${unit.genLog[1]} 
+        ${unit.genLog[2]} 
+
+        My gen nextStepOrder is ${unit.nextStepOrder}
+        My GenerationCommand is ${unit.getNextItemStep()}
 `);
 		setLiveStatus(unit.isAlive);
+
+		getNextItemStep(unit.getNextItemStep());
 	};
 
 	const toggleLiveStatus = () => {
@@ -41,20 +54,17 @@ const CubeItem: FC<CubeItemProps> = ({ size, index, unit, gameStatus, fontSize }
 		}
 	};
 
-	useEffect(() => {
-		if (gameStatusState && unit.world) {
-			generationStepInterval = setInterval(() => generationStep(), 500);
-			// generationStepInterval = setTimeout(() => generationStep(), 500);
-			// generationStepInterval = setTimeout(() => {
-			// 	console.log(`Generation Step ${Date.now()}`);
-			// 	generationStep();
-			// }, 1000);
-		}
+	// !***
+	// useEffect(() => {
+	// 	if (gameStatusState && unit.world) {
+	// 		generationStepInterval = setInterval(() => generationStep(), 500);
+	// 	}
 
-		return () => {
-			clearInterval(generationStepInterval);
-		};
-	}, []);
+	// 	return () => {
+	// 		clearInterval(generationStepInterval);
+	// 	};
+	// }, []);
+	// !***
 
 	return (
 		<>
@@ -64,7 +74,7 @@ const CubeItem: FC<CubeItemProps> = ({ size, index, unit, gameStatus, fontSize }
 					[s.ceil__hidden]: !unit.world
 				})}
 				style={{ width: size, height: size, fontSize: fontSize }}
-				onClick={toggleLiveStatus}
+				// onClick={toggleLiveStatus}
 			>
 				{/* {unit.x+':'+unit.y} */}
 			</div>

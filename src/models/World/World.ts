@@ -3,6 +3,7 @@ import { IUnit, Unit } from '../Unit/Unit';
 export interface IWorld {
 	cells: IUnit[][];
 	gridRange: number;
+	logMap: number[][];
 }
 
 export class World {
@@ -23,28 +24,37 @@ export class World {
             ↓
         */
 
-		for (let i = 0; i < quadScale + 2; i++) {
+		for (let y = 0; y < quadScale + 2; y++) {
 			const row: Unit[] = [];
 
-			if (i === 0 || i === quadScale + 1) {
-				for (let n = 0; n < quadScale + 2; n++) {
-					row.push(new Unit(0, n, i, null));
+			if (y === 0 || y === quadScale + 1) {
+				for (let x = 0; x < quadScale + 2; x++) {
+					row.push(new Unit(0, x, y, null));
 				}
 			} else {
-				for (let j = 0; j < quadScale + 2; j++) {
-					if (j === 0 || j === quadScale + 1) {
-						row.push(new Unit(0, j, i, null));
+				for (let x = 0; x < quadScale + 2; x++) {
+					if (x === 0 || x === quadScale + 1) {
+						row.push(new Unit(0, x, y, null));
 					} else {
-						row.push(new Unit(roundMinMax(0, 55), j, i, this));
+						row.push(new Unit(roundMinMax(0, 55), x, y, this));
 						// row.push(new Unit(roundMinMax(0,100), j, i, this))
 					}
 				}
 			}
 
 			this.cells.push(row);
+			this.logMap.push(row.map((unit) => (unit.health >= 50 ? 1 : 0)));
+
+			console.log(`CELLS`);
+			console.log({ cells: this.cells });
+			console.table(this.cells);
+			console.log(`logMap`);
+			console.log({ cells: this.logMap });
+			console.table(this.logMap);
 		}
 	}
 
 	cells: Unit[][] = [];
 	gridRange: number;
+	logMap: number[][] = [];
 }

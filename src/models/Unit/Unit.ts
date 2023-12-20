@@ -1,5 +1,11 @@
 import { IWorld } from '../World/World';
 
+export type Orders = 'alive' | 'dye' | 'stay' | 'initial';
+export type Command = {
+	x: number;
+	y: number;
+	command: Orders;
+} | null;
 export interface IUnit {
 	health: number;
 	isAlive: boolean;
@@ -7,9 +13,12 @@ export interface IUnit {
 	y: number;
 	world: IWorld | null;
 	genLog: number[][];
+	nextStepOrder: Orders;
+	generationCommand: Command;
 	checkSiblings(): void;
 	dye(): void;
 	alive(): void;
+	getNextItemStep(): Command;
 }
 
 export class Unit {
@@ -18,11 +27,14 @@ export class Unit {
 		this.x = x;
 		this.y = y;
 		this.world = world;
+		this.nextStepOrder = 'initial';
+
 		this.genLog = [
 			[0, 0, 0],
 			[0, 0, 0],
 			[0, 0, 0]
 		];
+
 		if (health >= 50) {
 			this.world && console.log({ health }, { x }, { y });
 			this.isAlive = true;
@@ -32,6 +44,8 @@ export class Unit {
 			this.isAlive = false;
 			this.genLog[1][1] = 0;
 		}
+
+		this.generationCommand = null;
 	}
 
 	health: number;
@@ -40,6 +54,8 @@ export class Unit {
 	y: number;
 	genLog: number[][];
 	world: IWorld | null;
+	nextStepOrder: Orders;
+	generationCommand: Command;
 
 	checkSiblings(): void {
 		const checkingResp = [];
@@ -136,11 +152,26 @@ export class Unit {
 
 		if (this.world && this.isAlive && checkingResp.length < 2) {
 			// this.isAlive = false;
+			this.nextStepOrder = 'dye';
 		} else if (this.world && this.isAlive && checkingResp.length > 3) {
 			// this.isAlive = false;
+			this.nextStepOrder = 'dye';
 		} else if (this.world && !this.isAlive && checkingResp.length === 3) {
 			// this.isAlive = true;
+			this.nextStepOrder = 'alive';
+		} else if (
+			this.world &&
+			this.isAlive &&
+			(checkingResp.length === 2 || checkingResp.length === 3)
+		) {
+			// this.isAlive = true;
+			this.nextStepOrder = 'stay';
 		}
+		this.generationCommand = {
+			x: this.x,
+			y: this.y,
+			command: this.nextStepOrder
+		};
 	}
 
 	dye(): void {
@@ -151,5 +182,9 @@ export class Unit {
 	alive(): void {
 		this.isAlive = true;
 		this.genLog[1][1] = 1;
+	}
+
+	getNextItemStep(): Command {
+		return this.generationCommand;
 	}
 }
